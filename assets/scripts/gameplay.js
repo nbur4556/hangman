@@ -1,11 +1,21 @@
 // Elements
 var letterBtns = document.querySelectorAll('.letter');
-var livesSec = document.querySelector('#lives');
+// var livesSec = document.querySelector('#lives');
+var hangmanDiag = document.querySelector('#hangman-diagram');
 var lettersCont = document.querySelector('#letters-container');
 var endMessage = document.querySelector('#end-message');
 
 //Variables
 let availableWords = allKnownWords;
+let diagramImgs = [
+    './assets/images/slice7.png',
+    './assets/images/slice6.png',
+    './assets/images/slice5.png',
+    './assets/images/slice4.png',
+    './assets/images/slice3.png',
+    './assets/images/slice2.png',
+    './assets/images/slice1.png'
+];
 let gameWord;
 let gameLetters;
 let lives;
@@ -27,12 +37,12 @@ function initGame() {
     for (let i = 0; i < gameLetters.length; i++) {
         //Create empty slot for letters and append to letters container
         let letterBox = document.createElement('div');
-        letterBox.textContent = '_';
+        letterBox.setAttribute('class', 'text-box');
 
         lettersCont.appendChild(letterBox);
     }
 
-    livesSec.textContent = lives;
+    hangmanDiag.setAttribute('src', diagramImgs[0]);
 }
 
 // Word is chosen randomly ftom available word array
@@ -85,12 +95,14 @@ function correctGuess() {
 
 //When guess is incorrect
 function incorrectGuess() {
-    lives--;
-    livesSec.textContent = lives;
-
-    //Gameover
-    if (lives <= 0) {
+    if (lives <= 1) {
+        //Gameover
         endMessage.textContent = 'Game Over';
+        hangmanDiag.setAttribute('src', diagramImgs[6]);
+    }
+    else {
+        lives--;
+        hangmanDiag.setAttribute('src', diagramImgs[6 - lives]);
     }
 }
 
