@@ -1,17 +1,39 @@
 // Elements
 var letterBtns = document.querySelectorAll('.letter');
-
-for (let i = 0; i < letterBtns.length; i++) {
-    letterBtns[i].addEventListener('click', guessLetter);
-}
+var livesSec = document.querySelector('#lives');
+var lettersCont = document.querySelector('#letters-container');
+var endMessage = document.querySelector('#end-message');
 
 //Variables
 let availableWords = allKnownWords;
-let gameWord = pickRandomWord();
-let gameLetters = new Array(gameWord.length);
-let lives = 6;
+let gameWord;
+let gameLetters;
+let lives;
 
-console.log(gameWord);
+initGame();
+
+//New Game
+function initGame() {
+    //Reset Variables
+    gameWord = pickRandomWord();
+    gameLetters = new Array(gameWord.length);
+    lives = 6;
+
+    //Setup UI
+    for (let i = 0; i < letterBtns.length; i++) {
+        letterBtns[i].addEventListener('click', guessLetter);
+    }
+
+    for (let i = 0; i < gameLetters.length; i++) {
+        //Create empty slot for letters and append to letters container
+        let letterBox = document.createElement('div');
+        letterBox.textContent = '_';
+
+        lettersCont.appendChild(letterBox);
+    }
+
+    livesSec.textContent = lives;
+}
 
 // Word is chosen randomly ftom available word array
 function pickRandomWord() {
@@ -24,10 +46,13 @@ function guessLetter(e) {
     let guessLetter = e.target.textContent;
     let guessTrue = false;
 
+    //Loop through gameword and check if letter matches
     for (let i = 0; i < gameWord.length; i++) {
         if (guessLetter.toLowerCase() == gameWord[i].toLowerCase()) {
             guessTrue = true;
+
             gameLetters[i] = guessLetter.toLowerCase();
+            lettersCont.children[i].textContent = guessLetter;
         }
     }
 
@@ -42,6 +67,7 @@ function guessLetter(e) {
     e.target.disabled = true;
 }
 
+//When guess is correct
 function correctGuess() {
     let foundAllLetters = true;
 
@@ -51,15 +77,20 @@ function correctGuess() {
         }
     }
 
+    //Winner
     if (foundAllLetters == true) {
-        console.log("You Win!");
+        endMessage.textContent = 'You Win!';
     }
 }
 
+//When guess is incorrect
 function incorrectGuess() {
     lives--;
+    livesSec.textContent = lives;
+
+    //Gameover
     if (lives <= 0) {
-        console.log('Game Over');
+        endMessage.textContent = 'Game Over';
     }
 }
 
